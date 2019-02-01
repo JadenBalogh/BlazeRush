@@ -1,0 +1,44 @@
+class FireJetLogic : ZilchComponent
+{
+    [Property]
+    var Projectile : Archetype = null;
+    [Property] 
+    var Cooldown : Real = 1;
+    [Property] 
+    var Duration : Real = 1;
+    [Property] 
+    var Delay : Real = 0;
+    
+    var TimeSinceLast : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);  
+        
+        this.TimeSinceLast = this.Delay;
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.TimeSinceLast > 0.0)
+        {
+            this.TimeSinceLast -= event.Dt;
+        }
+        else
+        {
+            this.TimeSinceLast = 0.0;
+        }
+        
+        if (this.TimeSinceLast == 0)
+        {
+            var position = this.Owner.Transform.WorldTranslation;
+            
+            position.Y += 0.5;
+            
+            var fireObject = this.Space.CreateAtPosition(this.Projectile, position);
+            fireObject.Lifetime.Lifetime = this.Duration;
+            
+            this.TimeSinceLast = this.Cooldown;
+        }
+    }
+}

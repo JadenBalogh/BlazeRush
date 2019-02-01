@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BreakableLogic",
+		uint64 ResourceId = 56b402a862de1e5c,
+	},
+},

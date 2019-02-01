@@ -1,0 +1,95 @@
+class PlayerInfo : ZilchComponent
+{
+    [Property] 
+    var DeathTimer : Real = 1;
+    [Property]
+    var DeathEffect : Archetype = null;
+    
+    var Alive : Boolean = true;
+    var Initial : Real = 0;
+    var RainSpawner : Cog = null;
+    
+    [Property] 
+    var FireCue : SoundCue = null;
+    [Property] 
+    var SpikeCue : SoundCue = null;
+    [Property] 
+    var EnemyCue : SoundCue = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.RainSpawner = this.Space.FindObjectByName("RainSpawner");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+        this.Initial = this.DeathTimer;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Alive == false)
+        {
+            this.Kill(event.Dt);
+        }
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if (other.Name == "Boss" && this.RainSpawner != null)
+        {
+            this.Owner.SimpleSound.Cue = this.FireCue;
+            this.Alive = false;
+            this.Owner.SimpleSound.Play();
+        }
+        if (other.Name == "Enemy")
+        {
+            this.Owner.SimpleSound.Cue = this.EnemyCue;
+            this.Alive = false;
+            this.Owner.SimpleSound.Play();
+        }
+        if (other.Name == "FireJetEffect" || other.Name == "CometEffect")
+        {
+            this.Owner.SimpleSound.Cue = this.FireCue;
+            this.Alive = false;
+            this.Owner.SimpleSound.Play();
+        }
+        if (other.Name == "Spike" || other.Name == "FallingSpike")
+        {
+            this.Owner.SimpleSound.Cue = this.SpikeCue;
+            this.Alive = false;
+            this.Owner.SimpleSound.Play();
+        }
+        if (other.Name == "FireBlast" && other.FireImpact.CanKill == true)
+        {
+            this.Owner.SimpleSound.Cue = this.FireCue;
+            this.Alive = false;
+            this.Owner.SimpleSound.Play();
+        }
+    }
+    
+    function Kill(deltaTime : Real)
+    {
+        if (this.DeathTimer == this.Initial)
+        {
+            this.Owner.Sprite.Visible = false;
+            
+            var position = this.Owner.Transform.WorldTranslation;
+            
+            var fireObject = this.Space.CreateAtPosition(this.DeathEffect, position);
+        }
+        
+        if (this.DeathTimer > 0.0)
+        {
+            this.DeathTimer -= deltaTime;
+        }
+        
+        if (this.DeathTimer <= 0)
+        {
+            this.Space.ReloadLevel();
+        }
+    }
+}

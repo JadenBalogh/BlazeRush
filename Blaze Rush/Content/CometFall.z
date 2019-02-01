@@ -1,0 +1,64 @@
+class CometFall : ZilchComponent
+{
+    var Player : Cog = null;
+    var Rain : Cog = null;
+    [Property]
+    var Projectile : Archetype = null;
+    [Property] 
+    var Cooldown : Real = 1;
+    [Property] 
+    var DirectionMod : Integer = 1;
+    
+    var TimeSinceLast : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Player.Transform.Translation.Y > 6.0)
+        {
+            this.SpawnComet(event.Dt);
+        }
+    }
+    
+    function SpawnComet(deltaTime : Real)
+    {
+        if (this.TimeSinceLast > 0.0)
+        {
+            this.TimeSinceLast -= deltaTime;
+        }
+        else
+        {
+            this.TimeSinceLast = 0.0;
+        }
+        
+        if (this.TimeSinceLast == 0)
+        {
+            var position = this.Owner.Transform.WorldTranslation;
+            
+            position.Y -= 2;
+            
+            this.Rain = this.Space.FindObjectByName("Rain");
+            
+            if (this.Rain == null)
+            {
+                var fireObject = this.Space.CreateAtPosition(this.Projectile, position);
+                
+                var randGen = Random();
+                var randomNumberX = randGen.Range(5, 10);
+                var randomNumberY = randGen.Range(-5, -10);
+                
+                //Console.WriteLine(randomNumberX, randomNumberY);
+                
+                fireObject.RigidBody.Velocity = Real3(randomNumberX * this.DirectionMod, randomNumberY, 0.0);
+            }
+            
+            this.TimeSinceLast = this.Cooldown;
+        }
+    }
+}

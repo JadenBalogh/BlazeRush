@@ -1,0 +1,37 @@
+class EnemySpawn : ZilchComponent
+{
+    [Property]
+    var Enemy : Archetype = null;
+    [Property] 
+    var Cooldown : Real = 1;
+    
+    var TimeSinceLast : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);  
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.TimeSinceLast > 0.0)
+        {
+            this.TimeSinceLast -= event.Dt;
+        }
+        else
+        {
+            this.TimeSinceLast = 0.0;
+        }
+        
+        if (this.TimeSinceLast == 0)
+        {
+            var position = this.Owner.Transform.WorldTranslation;
+            
+            position.X -= 1;
+            
+            var enemyObject = this.Space.CreateAtPosition(this.Enemy, position);
+            
+            this.TimeSinceLast = this.Cooldown;
+        }
+    }
+}

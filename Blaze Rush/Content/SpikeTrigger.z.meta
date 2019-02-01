@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "SpikeTrigger",
+		uint64 ResourceId = 564d93a40eab6ea0,
+	},
+},

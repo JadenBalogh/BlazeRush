@@ -1,0 +1,38 @@
+class BossDeath : ZilchComponent
+{
+    [Property]
+    var EndLevel : Level = null;
+    [Property]
+    var DeathEffect : Texture = null;
+    [Property]
+    var Lifetime : Real = 3.0;
+    
+    var RainSpawner : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.RainSpawner = this.Space.FindObjectByName("RainSpawner");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.RainSpawner == null)
+        {
+            this.Owner.LinearParticleAnimator.Growth -= 0.5 * event.Dt;
+            this.Owner.BoxCollider.Size = Real3(0, 0, 0);
+            this.Lifetime -= event.Dt;
+        }
+        
+        if (this.Lifetime < 0)
+        {
+            this.Owner.SphericalParticleEmitter.Active = false;
+        }
+        if (this.Lifetime < -0.5)
+        {
+            this.Owner.Destroy();
+            this.Space.LoadLevel(this.EndLevel);
+        }
+    }
+}

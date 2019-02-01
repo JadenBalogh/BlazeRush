@@ -1,0 +1,46 @@
+class CreateRain : ZilchComponent
+{
+    [Property]
+    var Lifetime : Real = 1.0;
+    [Property]
+    var Projectile : Archetype = null;
+    
+    var Alive : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Alive == false)
+        {
+            this.Lifetime -= event.Dt;
+            
+            if (this.Lifetime < 0)
+            {
+                this.Owner.SphericalParticleEmitter.Active = false;
+            }
+            if (this.Lifetime < -1)
+            {
+                this.Owner.Destroy();
+            }
+        }
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if (other.Name == "Player")
+        {
+            var pos = Real3(-4.7, 32.0, 0.0);
+            var rain = this.Space.CreateAtPosition(this.Projectile, pos);
+            
+            this.Alive = false;
+        }
+    }
+}

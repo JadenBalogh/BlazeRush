@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "CometFall",
+		uint64 ResourceId = 56401dff7b390582,
+	},
+},

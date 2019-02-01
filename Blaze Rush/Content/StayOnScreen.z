@@ -1,0 +1,26 @@
+class StayOnScreen : ZilchComponent
+{
+    var Alive : Boolean = true;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);  
+        
+        Zero.Connect(this.Owner, Events.ExitView, this.OnExitView);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Alive == false)
+        {
+            this.Owner.PlayerInfo.Kill(event.Dt);
+        }
+    }
+    
+    function OnExitView(event : GraphicalEvent)
+    {
+        this.Owner.SimpleSound.Cue = this.Owner.PlayerInfo.EnemyCue;
+        this.Owner.SimpleSound.Play();
+        this.Alive = false;
+    }
+}

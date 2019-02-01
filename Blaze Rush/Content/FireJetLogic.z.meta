@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "FireJetLogic",
+		uint64 ResourceId = 56369aad0d2d83aa,
+	},
+},

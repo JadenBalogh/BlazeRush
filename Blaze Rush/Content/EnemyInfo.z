@@ -1,0 +1,38 @@
+class EnemyInfo : ZilchComponent
+{
+    [Property] 
+    var Health : Real = 3.0;
+    [Property] 
+    var DeathEffect : Archetype = null;
+    [Property] 
+    var DeathSound : SoundCue = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Health <= 0)
+        {
+            var pos = this.Owner.Transform.WorldTranslation;
+            var dead = this.Space.CreateAtPosition(this.DeathEffect, pos);
+            this.Owner.Destroy();
+        }
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if (other.Name == "FireBlast")
+        {
+            this.Owner.SimpleSound.Cue = this.DeathSound;
+            this.Owner.SimpleSound.Play();
+            this.Health -= 1;
+        }
+    }
+}

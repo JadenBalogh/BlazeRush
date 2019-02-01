@@ -1,0 +1,7 @@
+ContentLibrary = 
+{
+	string Name = "Platform Rush Game",
+	uint64 LibraryId = 5639c96788157286,
+	string SourceControlType = "",
+	bool ReadOnly = false,
+},

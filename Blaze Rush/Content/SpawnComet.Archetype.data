@@ -1,0 +1,45 @@
+Cog = 
+{
+	LinkId = 
+	{
+		uint Id = 1,
+	},
+	Named = 
+	{
+		string Name = "SpawnComet",
+	},
+	Archetyped = 
+	{
+		string Name = "56401dd77364e98b:SpawnComet",
+	},
+	Transform = 
+	{
+		Vec3 Translation = [-17.0226288, 20.6212082, 0],
+		Vec3 Scale = [1, 1, 1],
+		Quat Rotation = [0, 0, 0, 1],
+	},
+	Sprite = 
+	{
+		bool Visible = false,
+		bool VisibilityCulling = true,
+		bool VisibilityEvents = true,
+		bool CastShadows = false,
+		Vec4 Color = [1, 1, 1, 1],
+		BlendMode BlendMode = Alpha,
+		SpriteGeometryMode GeometryMode = ZPlane,
+		string SpriteLayer = "52ad5fa30d7fcd50:DefaultSpriteLayer",
+		string SpriteSource = "5275aa4d802dd6dc:Square",
+		bool RenderMask = false,
+		bool FlipX = false,
+		bool FlipY = false,
+		bool AnimationActive = true,
+		float AnimationSpeed = 1,
+		uint StartFrame = 0,
+	},
+	CometFall = 
+	{
+		string Projectile = "5647723acbed0772:CometEffect",
+		float Cooldown = 4,
+		int DirectionMod = 1,
+	},
+},

@@ -1,0 +1,31 @@
+class DeathHudCreator : ZilchComponent
+{
+    [Property]
+    var HudLevel: Level = null; // Level that has our head's up display in it
+    var DeathHudSpace: Space = null;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        if (this.DeathHudSpace != null)
+        {
+            Console.WriteLine("UADHASHASHDSHDHSUHDSDHSAHUAUASUDHSAUDHSAU");
+            this.DeathHudSpace.LoadLevel(this.HudLevel);
+        }
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (Zero.Keyboard.KeyIsPressed(Keys.Two))
+        {
+            if(this.DeathHudSpace == null)
+            {
+                // Create a new Space to load our Hud level into
+                this.DeathHudSpace = this.GameSession.CreateNamedSpace("DeathHudSpace", Archetype.Find("Space"));
+                // Load the Hud level set in the property
+                this.DeathHudSpace.LoadLevel(this.HudLevel);
+            }
+        }
+    }
+}

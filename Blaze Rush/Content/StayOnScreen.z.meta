@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "StayOnScreen",
+		uint64 ResourceId = 563c50e821bd9216,
+	},
+},

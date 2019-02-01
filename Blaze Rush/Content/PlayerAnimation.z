@@ -1,0 +1,102 @@
+class PlayerAnimation : ZilchComponent
+{
+    [Property]
+    var PlayerStand : SpriteSource = null;
+
+    [Property]
+    var PlayerWalk : SpriteSource = null;
+
+    [Property]
+    var PlayerJump : SpriteSource = null;
+    
+    [Property] 
+    var PlayerDoubleJump : SpriteSource = null;
+    
+    [Property] 
+    var PlayerFall : SpriteSource = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Console.WriteLine(this.Owner.Sprite.SpriteSource);
+        
+        // standing state
+        if(this.Owner.Sprite.SpriteSource == this.PlayerStand)
+        {
+            if(Zero.Keyboard.KeyIsDown(Keys.A) || Zero.Keyboard.KeyIsDown(Keys.D))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerWalk;
+            }
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.W))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+        }
+        
+        // walking state
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerWalk)
+        {
+            if(Zero.Keyboard.KeyIsDown(Keys.A) == false && Zero.Keyboard.KeyIsDown(Keys.D) == false)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerStand;
+            }
+
+            if(Zero.Keyboard.KeyIsPressed(Keys.W))
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerJump;
+            }
+        }
+        
+        // jumping state
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerJump)
+        {
+            if(this.Owner.SweptController.Grounded)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerStand;
+            }
+            
+            if(this.Owner.RigidBody.Velocity.Y < 0.0)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerFall;
+            }
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.W) && this.Owner.RigidBody.Velocity.Y > 0.0)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerDoubleJump;
+            }
+        }
+        
+        // double jumping state
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerDoubleJump)
+        {
+            if(this.Owner.SweptController.Grounded)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerStand;
+            }
+            
+            if(this.Owner.RigidBody.Velocity.Y < 0.0)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerFall;
+            }
+        }
+        
+        // falling state
+        else if(this.Owner.Sprite.SpriteSource == this.PlayerFall)
+        {
+            if(this.Owner.SweptController.Grounded)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerStand;
+            }
+            
+            if(Zero.Keyboard.KeyIsPressed(Keys.W) && this.Owner.RigidBody.Velocity.Y > 0.0)
+            {
+                this.Owner.Sprite.SpriteSource = this.PlayerDoubleJump;
+            }
+        }
+    }
+}

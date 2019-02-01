@@ -1,0 +1,20 @@
+class DeathLogic : ZilchComponent
+{
+    var DeathCount : Integer = 0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+    
+    function AddDeath()
+    {
+        this.DeathCount += 1;
+        this.Owner.SpriteText.Text = "Deaths: `this.DeathCount`";
+    }
+}

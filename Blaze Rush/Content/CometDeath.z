@@ -1,0 +1,22 @@
+class CometDeath : ZilchComponent
+{
+    [Property]
+    var DeathEffect : Archetype = null;
+    var RainSpawner : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.RainSpawner = this.Space.FindObjectByName("RainSpawner");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.RainSpawner.CreateRain.Alive == false)
+        {
+            var death = this.Space.CreateAtPosition(this.DeathEffect, this.Owner.Transform.WorldTranslation);
+            this.Owner.Destroy();
+        }
+    }
+}

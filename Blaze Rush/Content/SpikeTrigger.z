@@ -1,0 +1,26 @@
+class SpikeTrigger : ZilchComponent
+{
+    var Player : Cog = null;
+    
+    [Property] 
+    var TriggerDistance : Real = 3.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        
+        this.TriggerDistance = this.Owner.Transform.WorldTranslation.X - this.TriggerDistance;
+        
+        this.Owner.RigidBody.DynamicState = RigidBodyDynamicState.Static;
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (this.Player.Transform.Translation.X > this.TriggerDistance && this.Player.Transform.Translation.Y < this.Owner.Transform.WorldTranslation.Y - 1)
+        {
+            this.Owner.RigidBody.DynamicState = RigidBodyDynamicState.Dynamic;
+        }
+    }
+}

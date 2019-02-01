@@ -1,0 +1,40 @@
+class FireImpact : ZilchComponent
+{
+    [Property] 
+    var DeathEffect : Archetype = null;
+    
+    var CanKill : Boolean = false;
+    
+    function Initialize(init : CogInitializer)
+    {
+        //Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if (other.Name == "Boss")
+        {
+            this.Owner.LinearParticleAnimator.Growth += 5;
+            this.CanKill = true;
+        }
+        if (other.Name == "Enemy" || other.Name == "Breakable")
+        {
+            var pos = this.Owner.Transform.WorldTranslation + Real3(0.0, 0.0, 1.0);
+            var death = this.Space.CreateAtPosition(this.DeathEffect, pos);
+            this.Owner.Destroy();
+        }
+        if (other.Name == "Player")
+        {
+            this.Owner.Destroy();
+        }
+    }
+}

@@ -1,0 +1,38 @@
+class HudCreator : ZilchComponent
+{
+    [Property] 
+    var MenuKey : Keys;
+    [Property]
+    var HudLevel: Level = null; // Level that has our head's up display in it
+    var HudSpace: Space = null;
+
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+    }
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        if (Zero.Keyboard.KeyIsPressed(this.MenuKey))
+        {
+            if(this.HudSpace == null)
+            {
+                this.Space.TimeSpace.Paused = true;
+                this.Space.SoundSpace.Pause = true;
+                // Create a new Space to load our Hud level into
+                this.HudSpace = this.GameSession.CreateNamedSpace("HudSpace", Archetype.Find("Space"));
+                // Load the Hud level set in the property
+                this.HudSpace.LoadLevel(this.HudLevel);
+            }
+        }
+    }
+    
+    function Destroyed()
+    {
+      // Make sure to clean up the extra Space we created
+      if(this.HudSpace != null)
+      {
+          this.HudSpace.Destroy();
+      }
+    }
+}

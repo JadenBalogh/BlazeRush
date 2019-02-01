@@ -1,0 +1,113 @@
+/*
+Advanced Boundary Movement AI
+This is an advanced AI script which creates Speed and 
+movement boundaries for an object. It will additionally
+make this object automatically follow a chosen Player object
+when it enters the given boundaries of this object.
+
+~All credits to Jaden Balogh~
+*/
+class EnemyAI : ZilchComponent
+{
+    //How far to the left the owner is allowed to travel
+    [Property]
+    var LeftBoundary : Real;
+    //How far to the right the owner is allowed to travel
+    [Property] 
+    var RightBoundary : Real;
+    //The owner's movement speed
+    [Property]
+    var Speed : Real = 1.0;
+    
+    //Used in the script, do not change!
+    var InitialPos : Real;
+    
+    var WithinBoundaries : Boolean = true;
+    
+    var Player : Cog = null;
+    
+    var LastLoc : Real = 0.0;
+    
+    //Connects to OnLogicUpdate and gets initial variable values
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.InitialPos = this.Owner.Transform.Translation.X;
+        
+        this.LeftBoundary = this.InitialPos - this.LeftBoundary;
+        this.RightBoundary = this.InitialPos + this.RightBoundary;
+    }
+    
+    
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        //Call the movement function, inputting event.Dt
+        this.Move(event.Dt);
+        
+        //if the object is past the left boundary,
+        if (this.Owner.Transform.Translation.X < this.LeftBoundary)
+        {
+            //change directions.
+            this.Speed *= -1;
+            
+            this.Owner.Sprite.FlipX = true;
+        }
+        //if the object is past the right boundary,
+        else if (this.Owner.Transform.Translation.X > this.RightBoundary)
+        {
+            //change directions.
+            this.Speed *= -1;
+            
+            this.Owner.Sprite.FlipX = false;
+        }
+        
+        //if the player comes into the boundaries:
+        if (this.Player.Transform.Translation.X > this.LeftBoundary && this.Player.Transform.Translation.X < this.RightBoundary)
+        {
+            //if the player is to the left of the enemy,
+            if (this.Player.Transform.Translation.X < this.Owner.Transform.Translation.X)
+            {
+                //and the enemy is moving away from the player,
+                if (this.Owner.Transform.Translation.X > this.LastLoc)
+                {
+                    //change directions.
+                    this.Speed *= -1;
+                    
+                    this.Owner.Sprite.FlipX = false;
+                }
+            }
+            
+            //if the player is to the right of the enemy,
+            if (this.Player.Transform.Translation.X > this.Owner.Transform.Translation.X)
+            {
+                //and the enemy is moving away from the player,
+                if (this.Owner.Transform.Translation.X < this.LastLoc)
+                {
+                    //change directions.
+                    this.Speed *= -1;
+                    
+                    this.Owner.Sprite.FlipX = true;
+                }
+            }
+        }
+        
+        this.LastLoc = this.Owner.Transform.Translation.X;
+    }
+    
+    //This function controls the basic movement of the object; 
+    //any directional changes should be done in OnLogicUpdate!
+    function Move(deltaTime : Real)
+    {
+        var movement = Real3(0.0, 0.0, 0.0);
+        var currentPos = this.Owner.Transform.Translation;
+        
+        movement += Real3(this.Speed, 0.0, 0.0);
+        
+        currentPos += movement * deltaTime;
+        
+        this.Owner.Transform.Translation = currentPos;
+    }
+}

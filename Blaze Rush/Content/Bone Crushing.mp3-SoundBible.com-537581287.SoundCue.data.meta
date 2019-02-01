@@ -1,0 +1,11 @@
+DataContent = 
+{
+	DataBuilder = 
+	{
+		string Name = "Bone Crushing.mp3-SoundBible.com-537581287",
+		uint64 ResourceId = 5645b1934791cd84,
+		string LoaderType = "SoundCue",
+		uint Version = 0,
+		bool ShowInEditor = true,
+	},
+},

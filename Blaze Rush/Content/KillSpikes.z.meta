@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "KillSpikes",
+		uint64 ResourceId = 564f6e0f17d79a12,
+	},
+},

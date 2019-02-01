@@ -1,0 +1,49 @@
+class BossCamera : ZilchComponent
+{
+    [Property] 
+    var Speed : Real = 1.0;
+    [Property] 
+    var ExpansionSpeed : Real = 1.0;
+    [Property]
+    var MaxExpansion : Real = 25.0;
+    var Player : Cog = null;
+    var Background : Cog = null;
+    
+    var InitialY : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        this.Background = this.Space.FindObjectByName("Background");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.InitialY = this.Owner.Transform.Translation.Y;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        this.DuringFight(event.Dt);
+    }
+    
+    function DuringFight(deltaTime : Real)
+    {
+        if (this.Owner.Camera.Size < this.MaxExpansion)
+        {
+            this.Owner.Camera.Size += this.ExpansionSpeed * deltaTime;
+        }
+        
+        var movement =  Real3(0.0, 0.0, 0.0);
+        
+        if (this.Owner.Transform.Translation.X > 0.5)
+        {
+            if (this.Player.Transform.Translation.X < this.Owner.Transform.Translation.X)
+            {
+                movement +=  Real3(this.Speed, 0.0, 0.0);
+            }
+            movement += Real3(this.Speed, 0.0, 0.0);
+        }
+        
+        this.Owner.Transform.Translation += movement * deltaTime;
+    }
+}

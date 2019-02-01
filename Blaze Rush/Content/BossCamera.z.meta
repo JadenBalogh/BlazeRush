@@ -1,0 +1,8 @@
+TextContent = 
+{
+	ZilchScriptBuilder = 
+	{
+		string Name = "BossCamera",
+		uint64 ResourceId = 5641e646f57e97cd,
+	},
+},

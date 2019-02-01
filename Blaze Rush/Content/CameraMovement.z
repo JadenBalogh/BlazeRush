@@ -1,0 +1,44 @@
+class CameraMovement : ZilchComponent
+{
+    [Property] 
+    var Speed : Real = 1.0;
+    
+    var Player : Cog = null;
+    
+    var InitialY : Real = 0.0;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.Player = this.Space.FindObjectByName("Player");
+        
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        this.InitialY = this.Owner.Transform.Translation.Y;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        var movement =  Real3(0.0, 0.0, 0.0);
+        
+        if (this.Player.Transform.Translation.X > (this.Owner.Transform.Translation.X + 4.0))
+        {
+            movement +=  Real3(this.Speed * 2.0, 0.0, 0.0);
+        }
+        else
+        {
+            movement +=  Real3(this.Speed, 0.0, 0.0);
+        }
+        
+        if (this.Player.Transform.Translation.Y > (this.Owner.Transform.Translation.Y + 3.0))
+        {
+            movement +=  Real3(0.0, this.Speed * 1.0, 0.0);
+        }
+        else if (this.Player.Transform.Translation.Y < (this.InitialY + 3.0)
+         && this.Owner.Transform.Translation.Y > (this.InitialY))
+        {
+            movement -=  Real3(0.0, this.Speed * 1.0, 0.0);
+        }
+        
+        this.Owner.Transform.Translation += movement * event.Dt;
+    }
+}

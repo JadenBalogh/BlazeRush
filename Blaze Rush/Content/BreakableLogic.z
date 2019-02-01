@@ -1,0 +1,69 @@
+class BreakableLogic : ZilchComponent
+{
+    [Property] 
+    var Durability : Real = 5;
+    [Property] 
+    var BreakObject : Archetype = null;
+    
+    [Property] 
+    var LowDamage : SpriteSource = null;
+    [Property] 
+    var ModerateDamage : SpriteSource = null;
+    [Property] 
+    var HighDamage : SpriteSource = null;
+    [Property] 
+    var ExtremeDamage : SpriteSource = null;
+    
+    var Object : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        Zero.Connect(this.Space, Events.LogicUpdate, this.OnLogicUpdate);
+        
+        Zero.Connect(this.Owner, Events.CollisionStarted, this.OnCollisionStarted);
+        
+        var pos = this.Owner.Transform.WorldTranslation + Real3(0.0, 0.0, 1.0);
+        var create = this.Space.CreateAtPosition(this.BreakObject, pos);
+        this.Object = create;
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+        
+    }
+    
+    function OnCollisionStarted(event : CollisionEvent)
+    {
+        var other = event.OtherObject;
+        
+        if (other.Name == "FireBlast")
+        {
+            this.Durability -= 1;
+            this.Object.Sprite.Visible = true;
+        }
+        
+        if (this.Durability <= 0)
+        {
+            this.Object.Destroy();
+            this.Owner.Destroy();
+        }
+        else if (this.Durability <= 1)
+        {
+            this.Object.Sprite.SpriteSource = this.ExtremeDamage;
+        }
+        else if (this.Durability <= 2)
+        {
+            this.Object.Sprite.SpriteSource = this.HighDamage;
+        }
+        else if (this.Durability <= 3)
+        {
+            this.Object.Sprite.SpriteSource = this.ModerateDamage;
+        }
+        else if (this.Durability <= 4)
+        {
+            this.Object.Sprite.SpriteSource = this.LowDamage;
+        }
+        
+        Console.WriteLine(this.Durability);
+    }
+}

@@ -1,0 +1,27 @@
+class MusicLogic : ZilchComponent
+{
+    var BackgroundMusicObject : Cog = null;
+    
+    function Initialize(init : CogInitializer)
+    {
+        this.BackgroundMusicObject = this.Space.FindObjectByName("BackgroundMusic");
+        // If the there is no background music
+        if(this.BackgroundMusicObject == null)
+        {
+            // Make some and
+            this.BackgroundMusicObject = this.Space.Create(Archetype.Find("BackgroundMusic"));
+            // Make it persist
+            this.BackgroundMusicObject.Persistent = true;
+        }
+        // If we are not yet playing the music
+        if (this.BackgroundMusicObject.SimpleSound.IsPlaying() == false)
+        {
+            // Get the music playing
+            this.BackgroundMusicObject.SimpleSound.Play();
+        }
+    }
+
+    function OnLogicUpdate(event : UpdateEvent)
+    {
+    }
+}

@@ -1,0 +1,8 @@
+FontContent = 
+{
+	FontBuilder = 
+	{
+		string Name = "Blazed",
+		uint64 ResourceId = 56b4c5bf68661d5f,
+	},
+},
